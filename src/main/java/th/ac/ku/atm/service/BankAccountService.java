@@ -12,19 +12,42 @@ import java.util.List;
 
 @Service
 public class BankAccountService {
-
+    //    private List<BankAccount> bankAccountList;
+//    @PostConstruct
+//    public void postConstruct(){
+//        this.bankAccountList = new ArrayList<>();
+//    }
+//
+//    public void createBankAccount(BankAccount bankAccount){
+//        bankAccountList.add(bankAccount);
+//    }
+//
+//    public List<BankAccount> getBankAccounts(){
+//        return new ArrayList<>(this.bankAccountList);
+//    }
     private RestTemplate restTemplate;
 
     public BankAccountService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
-    public List<BankAccount> getCustomerBankAccounts(int customerId) {
+    public List<BankAccount> getCustomerBankAccounts(int customerId){
+        //connect to bank account api service
         String url = "http://localhost:8091/api/bankaccount/customer/" + customerId;
         ResponseEntity<BankAccount[]> response = restTemplate.getForEntity(url, BankAccount[].class);
         BankAccount[] accounts = response.getBody();
         return Arrays.asList(accounts);
     }
 
+    public void openAccount(BankAccount bankAccount){
+        String url = "http://localhost:8091/api/bankaccount";
+        restTemplate.postForObject(url, bankAccount, BankAccount.class);
+    }
 
+    public List<BankAccount> getBankAccounts(){
+        String url = "http://localhost:8091/api/bankaccount";
+        ResponseEntity<BankAccount[]> response = restTemplate.getForEntity(url, BankAccount[].class);
+        BankAccount[] accounts = response.getBody();
+        return Arrays.asList(accounts);
+    }
 }
