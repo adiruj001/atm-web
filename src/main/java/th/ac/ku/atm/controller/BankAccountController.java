@@ -36,6 +36,7 @@ public class BankAccountController {
         return "bankaccount-edit";
     }
 
+
     @GetMapping("/delete/{id}")
     public String getDeleteBankAccountPage(@PathVariable int id, Model model) {
         BankAccount account = bankAccountService.getBankAccount(id);
@@ -43,9 +44,23 @@ public class BankAccountController {
         return "bankaccount-delete";
     }
 
+//    @PostMapping("/edit/{id}")
+//    public String editAccount(@PathVariable int id, @ModelAttribute BankAccount bankAccount, Model model) {
+//        bankAccountService.editBankAccount(bankAccount);
+//        model.addAttribute("bankaccounts",bankAccountService.getBankAccounts());
+//        return "redirect:/bankaccount";
+//    }
     @PostMapping("/edit/{id}")
-    public String editAccount(@PathVariable int id, @ModelAttribute BankAccount bankAccount, Model model) {
-        bankAccountService.editBankAccount(bankAccount);
+    public String editAccount(@PathVariable int id, @ModelAttribute BankAccount bankAccount,
+                              Model model, double amount, @RequestParam("btn") String button) {
+        BankAccount record = bankAccountService.getBankAccount(bankAccount.getId());
+        if(button.equals("Deposit")){
+            record.setBalance(record.getBalance() + amount);
+        }
+        else {
+            record.setBalance(record.getBalance() - amount);
+        }
+        bankAccountService.editBankAccount(record);
         model.addAttribute("bankaccounts",bankAccountService.getBankAccounts());
         return "redirect:/bankaccount";
     }
